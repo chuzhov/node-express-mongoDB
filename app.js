@@ -22,6 +22,18 @@ app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
+//catching mongoose validation error
+app.use((err, req, res, next) => {
+  if (err.name === "ValidationError") {
+    let errors = {};
+    Object.keys(err.errors).forEach((key) => {
+      errors[key] = err.errors[key].message;
+    });
+    return res.status(400).send(errors);
+  }
+  next(err);
+});
+
 app.use((err, req, res, next) => {
   const {
     status = 500,
