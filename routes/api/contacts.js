@@ -1,6 +1,11 @@
 const express = require("express");
 const Joi = require("joi");
-const cm = require("../../models/contacts");
+
+const {
+  contacts: ctrl,
+} = require("../../controllers");
+
+const json_cm = require("../../models/j-contacts");
 
 const {
   HttpError,
@@ -33,22 +38,25 @@ const putContactSchema = Joi.object()
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
-  try {
-    const contacts = await cm.listContacts();
-    res.json({ contacts });
-  } catch (error) {
-    next(error);
-  }
-});
+// router.get("/", async (req, res, next) => {
+//   try {
+//     const contacts = await json_cm.listContacts();
+//     res.json({ contacts });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.get("/", ctrl.getAll);
 
 router.get(
   "/:contactId",
   async (req, res, next) => {
     try {
-      const contact = await cm.getContactById(
-        req.params.contactId
-      );
+      const contact =
+        await json_cm.getContactById(
+          req.params.contactId
+        );
       if (!contact) {
         throw HttpError(
           404,
@@ -62,27 +70,31 @@ router.get(
   }
 );
 
-router.post("/", async (req, res, next) => {
-  try {
-    const { error } = postContactSchema.validate(
-      req.body
-    );
-    console.log(error);
-    if (error) {
-      throw HttpError(400, error.message); // Joi validation error
-    }
-    const contact = await cm.addContact(req.body);
-    res.status(201).json(contact);
-  } catch (error) {
-    next(error);
-  }
-});
+// router.post("/", async (req, res, next) => {
+//   try {
+//     const { error } = postContactSchema.validate(
+//       req.body
+//     );
+//     console.log(error);
+//     if (error) {
+//       throw HttpError(400, error.message); // Joi validation error
+//     }
+//     const contact = await json_cm.addContact(
+//       req.body
+//     );
+//     res.status(201).json(contact);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.post("/", ctrl.add);
 
 router.delete(
   "/:contactId",
   async (req, res, next) => {
     try {
-      const contact = await cm.removeContact(
+      const contact = await json_cm.removeContact(
         req.params.contactId
       );
       if (!contact)
@@ -109,7 +121,7 @@ router.put(
         throw HttpError(400, error.message); // Joi validation error
       }
       const id = req.params.contactId;
-      const contact = await cm.updateContact(
+      const contact = await json_cm.updateContact(
         id,
         req.body
       );
