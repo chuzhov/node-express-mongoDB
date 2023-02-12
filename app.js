@@ -22,6 +22,14 @@ app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
+//catching mongoose cast error
+app.use((err, req, res, next) => {
+  if (err.name === "CastError") {
+    return res.status(404).send(err.message);
+  }
+  next(err);
+});
+
 //catching mongoose validation error
 app.use((err, req, res, next) => {
   if (err.name === "ValidationError") {

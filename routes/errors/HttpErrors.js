@@ -14,7 +14,6 @@ const HttpError = (
 ) => {
   const error = new Error(message);
   error.status = status;
-  console.log("In error", message);
   return error;
 };
 
