@@ -1,5 +1,7 @@
 ## GoIT Node.js Course Homework #3
 
+Продовження створення REST API для роботи з колекцією контактів.
+
 ### Команди:
 
 - `npm start` &mdash; старт сервера в режимі production

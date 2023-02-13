@@ -1,38 +1,14 @@
 const express = require("express");
-const Joi = require("joi");
 
 const {
   contacts: ctrl,
 } = require("../../controllers");
-
 const {
-  HttpError,
-} = require("../errors/HttpErrors");
-
-const postContactSchema = Joi.object()
-  .keys({
-    name: Joi.string().required(),
-    email: Joi.string().email({ multiple: true }),
-    phone: Joi.string(),
-  })
-  .or("email", "phone")
-  .messages({
-    "any.required": "missing required name field",
-    "object.missing":
-      "One of [email] or [phone] values should be not null",
-  });
-
-const putContactSchema = Joi.object()
-  .keys({
-    name: Joi.string(),
-    email: Joi.string().email({ multiple: true }),
-    phone: Joi.string(),
-  })
-  .or("name", "email", "phone")
-  .messages({
-    "object.missing":
-      "Missing fields: [name], [email] or [phone] values should be not null",
-  });
+  addContactSchema,
+  updateContactSchema,
+  updateFavoriteSchema,
+} = require("../validation/index");
+const validateBody = require("../../middlewares/index");
 
 const router = express.Router();
 
@@ -40,12 +16,28 @@ router.get("/", ctrl.getAll);
 
 router.get("/:contactId", ctrl.getOne);
 
-router.post("/", ctrl.add);
+router.post(
+  "/",
+  validateBody(addContactSchema),
+  ctrl.add
+);
 
-router.delete("/:contactId", ctrl.remove);
+router.put(
+  "/:contactId",
+  validateBody(updateContactSchema),
+  ctrl.update
+);
 
-router.put("/:contactId", ctrl.update);
+router.patch(
+  "/:contactId/favorite",
+  validateBody(updateFavoriteSchema),
+  ctrl.updateStatusContact
+);
 
-router.patch("/:contactId/favorite", ctrl.update);
+router.delete(
+  "/:contactId",
+  validateBody(updateFavoriteSchema),
+  ctrl.remove
+);
 
 module.exports = router;

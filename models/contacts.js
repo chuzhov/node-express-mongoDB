@@ -20,7 +20,7 @@ const contactSchema = Schema(
       default: false,
     },
   },
-  { versionKey: false, timestamp: true }
+  { timestamp: true }
 );
 
 const Contact = model("contact", contactSchema);
