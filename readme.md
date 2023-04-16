@@ -1,4 +1,4 @@
-## GoIT Node.js Course Homework #3
+Node.js Express server connected to MongoDB
 
 Продовження створення REST API для роботи з колекцією контактів.
 
